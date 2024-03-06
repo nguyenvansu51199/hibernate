@@ -12,7 +12,7 @@
         <!-- Xoa - tao lai tu dau -->
         <!-- <property name="hibernate.hbm2ddl.auto">create-drop</property>  -->
         <!-- Cap nhat nhung thong tin moi -->
-        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
         
         <!-- Mapping -->

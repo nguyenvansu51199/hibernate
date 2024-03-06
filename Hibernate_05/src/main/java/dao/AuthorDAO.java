@@ -2,6 +2,8 @@ package dao;
 
 import java.util.List;
 
+import model.Author;
+
 public class AuthorDAO implements DAOInterface<Author>{
 
 	@Override

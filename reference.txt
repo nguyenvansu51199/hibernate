@@ -1,0 +1,104 @@
+- JPA: là viết tắt của Java Persistence API, nó là một đặc tả Java cho việc ánh xạ giữa các đối tượng Java với cơ sở dữ liệu quan hệ sử dụng công nghệ phổ biến là ORM (Object Relational Mapping).
+- ORM: cho phép ánh xạ cơ sở dữ liệu đến các đối tượng thuộc ngôn ngữ lập trình hướng đối tượng chẳng hạn như C#, Java,
+	+Ưu điểm và nhược điểm
+- Hibernate là một thư viện ORM (Object Relational Mapping) mã nguồn mở giúp lập trình viên viết ứng dụng Java có thể map các objects (pojo) với hệ quản trị cơ sở dữ liệu quan hệ,
+và hỗ trợ thực hiện các khái niệm lập trình hướng đối tượng với cớ dữ liệu quan hệ.
+- mapping(ánh xạ)
+- Annotation: chú thích https://gpcoder.com/6338-cac-annotation-cua-hibernate/
+
+- Hibernate Query Language (HQL) là một ngôn ngữ truy vấn hướng đối tượng
+- Lệnh HQL : https://www.tutorialspoint.com/hibernate/hibernate_query_language.htm
+- Kết quả từ cơ sở dữ liệu là đối tượng(không phải các cột như JDBC)
+- Các trạng thái của Hibernate
+	+ Transient	: trạng thái không có liên quan gì đến Hibernate
+	+ Persistent	: trạng thái dữ liệu được lấy từ csdl(qua phương thức get, load,pind) hoặc thêm vào csdl(qua phương thức save, persist,..)
+			  Khi commit xong thì từ trạng thái Persistent chuyển sang trạng thái Detached
+	+ Detached	: trạng thái đã từng có trạng thái persistent
+	+ Remove	:
+
+- Các môi quan hệ của Hibernate
+	+ One-To-One
+	+ One-To_Many
+	+ Many-To-One
+	+ Many-To-Many
+
+- Kế thừa trong Hibernate: (việc kế thừa trong java ảnh hưởng như thế nào đối với cơ sở dữ liệu)
+	Hibernate có 3 cách mapping
+		+ Map tất cả dữ liệu xuống duy nhất một table(InheritanceType.SINGLE_TABLE)
+		+ Map riêng lớp cha và các lớp con, khi đó trong table của lớp con sẽ chứa khoá của lớp cha(InheritanceType.JOINED)
+		+ Không map dữ liệu trong lớp cha mà đưa thẳng dữ liệu của lớp cha về các lớp con. Khi đó có bao nhiêu lớp con sẽ có bấy nhiêu table(InheritanceType.TABLE_PER_CLASS)
+
+
+	Lớp cha phải khai báo  @Inheritance
+	Phải được khai báo cách map
+		@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+		@Inheritance(strategy = InheritanceType.JOINED)
+		@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+
+- Casecade trong Hibernate: (việc thay đổi dữ liệu sẽ ảnh hưởng đến các table có liên quan như thế nào)
+		casecade = CasecadeType.All(thông dụng)
+		casecade = CasecadeType.PERSIST
+		casecade = CasecadeType.DETACH
+		casecade = CasecadeType.MERGE
+		casecade = CasecadeType.REFRESH
+		casecade = CasecadeType.REMOVE
+
+- Load dữ liệu trong Hiberante:
+	fetch = FetchType.LAZY				load dữ liệu trong table đến đâu thì load dữ liệu đến đấy.
+	fetch = FetchType.EAGER				load tất cả dữ liệu, table có liên quan
+
+-Tải JBoss Tool để hỗ trợ cấu hình Hibernate dễ dàng hơn
+
+
+-Tạo maven và add thư viện vào (file pom.xml)
+ + Thư viện kết nối csdl mySQL : mysql-connector-java
++ Thư viện kết nối csdl SqlServer: mssql-jdbc
++ thư viện hibernate: hibernate-core
+
+
+- cấu hình file Hibernate.cfg.xml
+  + MySQL	
+
+   <session-factory>
+    	<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+	<!-- Tao bang trong database cat-->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cat</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+        <!-- xoa tao lai tu dau -->
+        <!-- <property name="hibernate.hbm2ddl.auto">create-drop</property> -->
+        <!-- cap nhat nhung thong tin moi -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <!-- hien thi cau lenh sql tren cua so console -->
+        <property name="show_sql">true</property>
+        
+        <!-- Mapping -->
+        <mapping class="model.Cat"/>
+    </session-factory>
+
+  + SQL SERVER
+
+	<session-factory>
+       	 	<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+        	<property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        
+        	<property name="hibernate.connection.url">jdbc:sqlserver://localhost;databaseName=Animal;encrypt=true;trustServerCertificate=true;</property>
+       		<property name="hibernate.connection.username">sa</property>
+       		<property name="hibernate.connection.password">123</property>
+        	<property name="hibernate.hbm2ddl.auto">update</property>
+        	<property name="show_sql">true</property>
+        
+        <!-- Mapping -->
+        <mapping class="model.Cat"/>
+    </session-factory>
+
+
+- Tạo dự án đơn giản
+	B1: Chuẩn bị (tạo) database. Đối với cơ sở dữ liệu SQL SERVER nên kiểm tra đã bật port 1433 hay chưa
+	B2: Tạo dự án Maven(org.apache.maven.archetypes-quickstart) + thêm các thư viện
+	B3: Tạo Entity
+		Lưu ý: anotation
+	B4: Tạo file cấu hình Hibernate.cfg.xml
+	B5: Tạo file HibernateUtil
+
